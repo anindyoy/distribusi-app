@@ -7,7 +7,7 @@ export default function HomeScreen() {
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button
-        title="Tabel Distribusi"
+        title="Data Distribusi"
         onPress={() => navigation.navigate('tabel-distribusi')}
       />
     </View>
