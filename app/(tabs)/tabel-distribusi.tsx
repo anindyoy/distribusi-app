@@ -1,3 +1,4 @@
+import { Picker } from '@react-native-picker/picker';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -7,13 +8,14 @@ import globalStyles from '../../constants/globalStyles';
 export default function TabelDistribusiScreen() {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [limit, setLimit] = useState(5);
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(API_URL_LIST + '?lembaga_id=1&limit=5', {
+                const response = await fetch(API_URL_LIST + `?lembaga_id=1&limit=${limit}`, {
                     method: 'GET',
                     headers: {
                         Accept: 'application/json',
@@ -29,7 +31,7 @@ export default function TabelDistribusiScreen() {
             setLoading(false);
         };
         fetchData();
-    }, []);
+    }, [limit]);
 
     if (loading) {
         return (
@@ -42,6 +44,19 @@ export default function TabelDistribusiScreen() {
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.title}>Data Distribusi</Text>
+            <View style={{ marginBottom: 16, height: 20, borderRadius: 10, backgroundColor: '#f0f4fa', justifyContent: 'center', borderWidth: 1, borderColor: '#b5c6e0' }}>
+                <Picker
+                    selectedValue={limit}
+                    onValueChange={(itemValue: number) => setLimit(itemValue)}
+                    mode="dropdown"
+                    style={{ fontSize: 18 }}
+                    itemStyle={{ fontSize: 18, height: 54 }}
+                >
+                    <Picker.Item label="5 data" value={5} />
+                    <Picker.Item label="10 data" value={10} />
+                    <Picker.Item label="20 data" value={20} />
+                </Picker>
+            </View>
             {data.length === 0 && (
                 <Text style={{ color: 'red', marginBottom: 16 }}>Data tidak ditemukan atau format data salah.</Text>
             )}
@@ -110,6 +125,6 @@ export default function TabelDistribusiScreen() {
 const styles = StyleSheet.create({
     cardList: {
         alignItems: 'center',
-        paddingBottom: 24,
+        paddingBottom: 10,
     },
 });

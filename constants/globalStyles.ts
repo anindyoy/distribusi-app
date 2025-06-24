@@ -77,7 +77,7 @@ const globalStyles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 28,
+    marginBottom: 10,
     color: '#1976d2',
     letterSpacing: 1,
     textAlign: 'center',
