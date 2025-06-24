@@ -1,7 +1,8 @@
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { API_TOKEN, API_URL_LIST } from '../../constants/api';
 import globalStyles from '../../constants/globalStyles';
 
@@ -9,13 +10,24 @@ export default function TabelDistribusiScreen() {
     const [data, setData] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [limit, setLimit] = useState(5);
+    const [showStartPicker, setShowStartPicker] = useState(false);
+    const [showEndPicker, setShowEndPicker] = useState(false);
+    const [startDate, setStartDate] = useState<Date | null>(null);
+    const [endDate, setEndDate] = useState<Date | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(API_URL_LIST + `?lembaga_id=1&limit=${limit}`, {
+                let url = API_URL_LIST + `?lembaga_id=1&limit=${limit}`;
+                if (startDate) {
+                    url += `&tanggal_awal=${startDate.toISOString().slice(0, 10)}`;
+                }
+                if (endDate) {
+                    url += `&tanggal_akhir=${endDate.toISOString().slice(0, 10)}`;
+                }
+                const response = await fetch(url, {
                     method: 'GET',
                     headers: {
                         Accept: 'application/json',
@@ -31,7 +43,7 @@ export default function TabelDistribusiScreen() {
             setLoading(false);
         };
         fetchData();
-    }, [limit]);
+    }, [limit, startDate, endDate]);
 
     if (loading) {
         return (
@@ -44,12 +56,12 @@ export default function TabelDistribusiScreen() {
     return (
         <View style={globalStyles.container}>
             <Text style={globalStyles.title}>Data Distribusi</Text>
-            <View style={{ marginBottom: 16, height: 20, borderRadius: 10, backgroundColor: '#f0f4fa', justifyContent: 'center', borderWidth: 1, borderColor: '#b5c6e0' }}>
+            <View style={{ marginBottom: 16,  borderRadius: 10, backgroundColor: '#f0f4fa', justifyContent: 'center', borderWidth: 1, borderColor: '#b5c6e0' }}>
                 <Picker
                     selectedValue={limit}
                     onValueChange={(itemValue: number) => setLimit(itemValue)}
                     mode="dropdown"
-                    style={{ fontSize: 18 }}
+                    style={{ fontSize: 18, }}
                     itemStyle={{ fontSize: 18, height: 54 }}
                 >
                     <Picker.Item label="5 data" value={5} />
@@ -57,6 +69,106 @@ export default function TabelDistribusiScreen() {
                     <Picker.Item label="20 data" value={20} />
                 </Picker>
             </View>
+            {/* Label filter tanggal */}
+            <Text style={{fontSize: 15, color: '#555', marginBottom: 4, alignSelf: 'center'}}>Filter tanggal distribusi:</Text>
+            {/* Filter tanggal */}
+            <View style={{flexDirection: 'row', gap: 10, marginBottom: 16}}>
+                {Platform.OS === 'web' ? (
+                    <>
+                        <input
+                            type="date"
+                            style={{
+                                background: '#e2e8f0',
+                                borderRadius: 8,
+                                padding: 8,
+                                border: '1px solid #b5c6e0',
+                                fontSize: 15,
+                                color: '#1976d2',
+                                marginRight: 8,
+                            }}
+                            value={startDate ? startDate.toISOString().slice(0,10) : ''}
+                            max={endDate ? endDate.toISOString().slice(0,10) : new Date().toISOString().slice(0,10)}
+                            onChange={e => {
+                                const val = e.target.value ? new Date(e.target.value) : null;
+                                if (val && endDate && val > endDate) return;
+                                setStartDate(val);
+                            }}
+                        />
+                        <input
+                            type="date"
+                            style={{
+                                background: '#e2e8f0',
+                                borderRadius: 8,
+                                padding: 8,
+                                border: '1px solid #b5c6e0',
+                                fontSize: 15,
+                                color: '#1976d2',
+                            }}
+                            value={endDate ? endDate.toISOString().slice(0,10) : ''}
+                            min={startDate ? startDate.toISOString().slice(0,10) : undefined}
+                            max={new Date().toISOString().slice(0,10)}
+                            onChange={e => {
+                                const val = e.target.value ? new Date(e.target.value) : null;
+                                if (val && startDate && val < startDate) return;
+                                if (val && val > new Date()) return;
+                                setEndDate(val);
+                            }}
+                        />
+                    </>
+                ) : (
+                    <>
+                        <TouchableOpacity
+                            style={{backgroundColor: '#e2e8f0', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1, borderColor: '#b5c6e0'}}
+                            onPress={() => setShowStartPicker(true)}
+                        >
+                            <Text style={{fontSize: 15, color: '#1976d2'}}>
+                                {startDate ? `Dari: ${startDate.toISOString().slice(0,10)}` : 'Pilih Tanggal Awal'}
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{backgroundColor: '#e2e8f0', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 8, borderWidth: 1, borderColor: '#b5c6e0'}}
+                            onPress={() => setShowEndPicker(true)}
+                        >
+                            <Text style={{fontSize: 15, color: '#1976d2'}}>
+                                {endDate ? `Sampai: ${endDate.toISOString().slice(0,10)}` : 'Pilih Tanggal Akhir'}
+                            </Text>
+                        </TouchableOpacity>
+                    </>
+                )}
+            </View>
+            {/* DateTimePicker hanya untuk mobile */}
+            {Platform.OS !== 'web' && showStartPicker && (
+                <DateTimePicker
+                    value={startDate || new Date()}
+                    mode="date"
+                    display="default"
+                    maximumDate={endDate ? endDate : new Date()}
+                    onChange={(event: any, selectedDate?: Date) => {
+                        setShowStartPicker(false);
+                        if (selectedDate) {
+                            if (endDate && selectedDate > endDate) return;
+                            setStartDate(selectedDate);
+                        }
+                    }}
+                />
+            )}
+            {Platform.OS !== 'web' && showEndPicker && (
+                <DateTimePicker
+                    value={endDate || new Date()}
+                    mode="date"
+                    display="default"
+                    minimumDate={startDate || undefined}
+                    maximumDate={new Date()}
+                    onChange={(event: any, selectedDate?: Date) => {
+                        setShowEndPicker(false);
+                        if (selectedDate) {
+                            if (startDate && selectedDate < startDate) return;
+                            if (selectedDate > new Date()) return;
+                            setEndDate(selectedDate);
+                        }
+                    }}
+                />
+            )}
             {data.length === 0 && (
                 <Text style={{ color: 'red', marginBottom: 16 }}>Data tidak ditemukan atau format data salah.</Text>
             )}
