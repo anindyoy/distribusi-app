@@ -222,7 +222,7 @@ export default function TabelDistribusiScreen() {
                 />
             )}
             {data.length === 0 && (
-                <Text style={{ color: 'red', marginBottom: 16 }}>Data tidak ditemukan atau format data salah.</Text>
+                <Text style={{ color: 'red', marginBottom: 16 }}>Data tidak ditemukan.</Text>
             )}
             <ScrollView contentContainerStyle={styles.cardList}>
                 {data.map((row) => {
