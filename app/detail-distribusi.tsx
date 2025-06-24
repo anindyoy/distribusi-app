@@ -2,6 +2,7 @@ import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { API_TOKEN, API_URL } from '../constants/api';
+import globalStyles from '../constants/globalStyles';
 
 const TABS = [
   { key: 'barang', label: 'Barang' },
@@ -39,12 +40,12 @@ export default function DetailDistribusiScreen() {
 
   if (loading) {
     return (
-      <View style={styles.container}><ActivityIndicator size="large" color="#333" /></View>
+      <View style={globalStyles.container}><ActivityIndicator size="large" color="#333" /></View>
     );
   }
   if (!data) {
     return (
-      <View style={styles.container}><Text style={{color:'red'}}>Data tidak ditemukan</Text></View>
+      <View style={globalStyles.container}><Text style={{color:'red'}}>Data tidak ditemukan</Text></View>
     );
   }
 
@@ -60,10 +61,10 @@ export default function DetailDistribusiScreen() {
       <View style={styles.sectionCard}>
         {Array.isArray(data.barang) && data.barang.length > 0 ? data.barang.map((b: any, idx: number) => (
           <View key={b.id || idx} style={styles.subCard}>
-            <Text style={styles.value}><Text style={styles.labelInline}>Nama:</Text> {b.nama_barang}</Text>
-            <Text style={styles.value}><Text style={styles.labelInline}>Jumlah:</Text> {b.jumlah}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Nama:</Text> {b.nama_barang}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Jumlah:</Text> {b.jumlah}</Text>
           </View>
-        )) : <Text style={styles.value}>-</Text>}
+        )) : <Text style={globalStyles.value}>-</Text>}
       </View>
     );
   } else if (activeTab === 'penerima') {
@@ -71,13 +72,13 @@ export default function DetailDistribusiScreen() {
       <View style={styles.sectionCard}>
         {Array.isArray(data.penerima) && data.penerima.length > 0 ? data.penerima.map((p: any, idx: number) => (
           <View key={p.nama_penerima+idx} style={styles.subCard}>
-            <Text style={styles.value}><Text style={styles.labelInline}>Instansi:</Text> {p.nama_instansi}</Text>
-            <Text style={styles.value}><Text style={styles.labelInline}>Nama:</Text> {p.nama_penerima}</Text>
-            <Text style={styles.value}><Text style={styles.labelInline}>Kota:</Text> {p.kota || '-'}</Text>
-            <Text style={styles.value}><Text style={styles.labelInline}>HP:</Text> {p.hp || '-'}</Text>
-            <Text style={styles.value}><Text style={styles.labelInline}>Alamat:</Text> {p.alamat || '-'}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Instansi:</Text> {p.nama_instansi}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Nama:</Text> {p.nama_penerima}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Kota:</Text> {p.kota || '-'}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>HP:</Text> {p.hp || '-'}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Alamat:</Text> {p.alamat || '-'}</Text>
           </View>
-        )) : <Text style={styles.value}>-</Text>}
+        )) : <Text style={globalStyles.value}>-</Text>}
       </View>
     );
   } else if (activeTab === 'petugas') {
@@ -85,28 +86,28 @@ export default function DetailDistribusiScreen() {
       <View style={styles.sectionCard}>
         {Array.isArray(data.petugas) && data.petugas.length > 0 ? data.petugas.map((p: any, idx: number) => (
           <View key={p.nama+idx} style={styles.subCard}>
-            <Text style={styles.value}><Text style={styles.labelInline}>Nama:</Text> {p.nama}</Text>
-            <Text style={styles.value}><Text style={styles.labelInline}>Tugas:</Text> {p.tugas}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Nama:</Text> {p.nama}</Text>
+            <Text style={globalStyles.value}><Text style={styles.labelInline}>Tugas:</Text> {p.tugas}</Text>
           </View>
-        )) : <Text style={styles.value}>-</Text>}
+        )) : <Text style={globalStyles.value}>-</Text>}
       </View>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Detail Distribusi</Text>
-      <View style={styles.mainCard}>
-        <Text style={styles.label}>Nomor:</Text>
-        <Text style={styles.value}>{data.nomor}</Text>
-        <Text style={styles.label}>Judul:</Text>
-        <Text style={styles.value}>{data.judul}</Text>
-        <Text style={styles.label}>Tanggal:</Text>
-        <Text style={styles.value}>{data.tanggal}</Text>
-        <Text style={styles.label}>Jenis:</Text>
-        <Text style={styles.value}>{data.jenis}</Text>
-        <Text style={styles.label}>Status:</Text>
-        <Text style={styles.value}>{data.status}</Text>
+    <ScrollView contentContainerStyle={globalStyles.container}>
+      <Text style={globalStyles.title}>Detail Distribusi</Text>
+      <View style={globalStyles.card}>
+        <Text style={globalStyles.label}>Nomor:</Text>
+        <Text style={globalStyles.value}>{data.nomor}</Text>
+        <Text style={globalStyles.label}>Judul:</Text>
+        <Text style={globalStyles.value}>{data.judul}</Text>
+        <Text style={globalStyles.label}>Tanggal:</Text>
+        <Text style={globalStyles.value}>{data.tanggal}</Text>
+        <Text style={globalStyles.label}>Jenis:</Text>
+        <Text style={globalStyles.value}>{data.jenis}</Text>
+        <Text style={globalStyles.label}>Status:</Text>
+        <Text style={globalStyles.value}>{data.status}</Text>
       </View>
       {/* Tab Navigation */}
       <View style={styles.tabBar}>
@@ -135,47 +136,6 @@ export default function DetailDistribusiScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    padding: 24,
-    backgroundColor: '#e9ecef',
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginBottom: 30,
-    color: '#2d3748',
-    letterSpacing: 1.2,
-    textShadowColor: '#bfc9d1',
-    textShadowOffset: { width: 1, height: 2 },
-    textShadowRadius: 2,
-  },
-  mainCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 22,
-    marginBottom: 24,
-    width: 370,
-    shadowColor: '#1976d2',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.13,
-    shadowRadius: 10,
-    elevation: 4,
-    borderLeftWidth: 6,
-    borderLeftColor: '#1976d2',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#1976d2',
-    marginBottom: 8,
-    alignSelf: 'center',
-    marginLeft: 0,
-    marginTop: 8,
-    textAlign: 'center',
-  },
   sectionCard: {
     backgroundColor: '#f8fafc',
     borderRadius: 12,
@@ -188,27 +148,9 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 2,
   },
-  label: {
-    fontWeight: '600',
-    fontSize: 15,
-    marginTop: 10,
-    color: '#4a5568',
-    alignSelf: 'flex-start',
-    letterSpacing: 0.5,
-  },
   labelInline: {
     fontWeight: 'bold',
     color: '#1976d2',
-  },
-  value: {
-    fontSize: 16,
-    color: '#222',
-    marginBottom: 4,
-    alignSelf: 'flex-start',
-    backgroundColor: 'transparent',
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    borderRadius: 0,
   },
   subCard: {
     backgroundColor: '#fff',
