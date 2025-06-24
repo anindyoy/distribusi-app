@@ -1,9 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-const API_URL = 'https://distribusi.sidonat.com/api/distribusi/get_data';
-const TOKEN = '3|y7P1BwUxeyEody1JDmQmULVh0XVNMXlNUeo7pkRy2937740e';
+import { API_TOKEN, API_URL_LIST } from '../../constants/api';
 
 export default function TabelDistribusiScreen() {
     const [data, setData] = useState<any[]>([]);
@@ -14,12 +12,12 @@ export default function TabelDistribusiScreen() {
         const fetchData = async () => {
             setLoading(true);
             try {
-                const response = await fetch(API_URL + '?lembaga_id=1&limit=5', {
+                const response = await fetch(API_URL_LIST + '?lembaga_id=1&limit=5', {
                     method: 'GET',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
-                        Authorization: `Bearer ${TOKEN}`,
+                        Authorization: `Bearer ${API_TOKEN}`,
                     },
                 });
                 const result = await response.json();

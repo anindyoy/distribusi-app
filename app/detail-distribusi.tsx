@@ -1,9 +1,7 @@
 import { useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-
-const API_URL = 'https://distribusi.sidonat.com/api/distribusi/';
-const TOKEN = '3|y7P1BwUxeyEody1JDmQmULVh0XVNMXlNUeo7pkRy2937740e';
+import { API_TOKEN, API_URL } from '../constants/api';
 
 const TABS = [
   { key: 'barang', label: 'Barang' },
@@ -26,7 +24,7 @@ export default function DetailDistribusiScreen() {
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${TOKEN}`,
+            Authorization: `Bearer ${API_TOKEN}`,
           },
         });
         const result = await response.json();
